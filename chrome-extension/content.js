@@ -933,28 +933,31 @@ function CN_CheckCorrectPage() {
  * @returns {Object} Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px. 
  */
 function DC_getLocalStragePostition() {
+	var posObj;
+	var defaultPosObject = {
+		x: 8,
+		y: 16
+	};
+
 	// Check if local storage is available in the browser
-	if (typeof(Storage) !== "undefined") {
-    // Get the JSON string from local storage
-    var jsonStr = localStorage.getItem("#TTGPTSettings.pos");
-		var posObj;
-    // Parse the JSON string to an object or use default values
-		posObj = JSON.parse(jsonStr);
-		if (posObj == null) {
-			posObj = {
-				x: 8,
-				y: 16
-			};
-		}
-		// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
-		// console.log(posObj);
-		// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
-		return posObj;
-	} else {
+	if (typeof (Storage) !== "undefined") {
 		// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
 		// console.error("Tried getting the position of #TTGPTSettings but from local storage but Local storage is not supported in this browser.");
 		// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
+		return defaultPosObject;
 	}
+
+	// Get the JSON string from local storage
+	var jsonStr = localStorage.getItem("#TTGPTSettings.pos");
+	// Parse the JSON string to an object or use default values
+	posObj = JSON.parse(jsonStr);
+	if (posObj == null) {
+		posObj = defaultPosObject;
+	}
+	// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
+	// console.log(posObj);
+	// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
+	return posObj;
 }
 
 /**
