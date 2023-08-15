@@ -923,6 +923,71 @@ function CN_CheckCorrectPage() {
 	}
 }
 
+/**
+ * Retrieves position information for #TTGPTSettings from local storage.
+ * 
+ * This function attempts to fetch the position information associated with the key
+ * "#TTGPTSettings.pos" from local storage. If the key is not present or the JSON parsing
+ * fails, default values for position (x: 8, y: 16) are used.
+ * 
+ * @returns {Object} Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px. 
+ */
+function DC_getLocalStragePostition() {
+	// Check if local storage is available in the browser
+	if (typeof(Storage) !== "undefined") {
+    // Get the JSON string from local storage
+    var jsonStr = localStorage.getItem("#TTGPTSettings.pos");
+		var posObj;
+    // Parse the JSON string to an object or use default values
+		posObj = JSON.parse(jsonStr);
+		if (posObj == null) {
+			posObj = {
+				x: 8,
+				y: 16
+			};
+		}
+		// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
+		// console.log(posObj);
+		// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
+		return posObj;
+	} else {
+		// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
+		// console.error("Tried getting the position of #TTGPTSettings but from local storage but Local storage is not supported in this browser.");
+		// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
+	}
+}
+
+/**
+ * Sets position information in local storage.
+ *
+ * Sets the position information associated with the key
+ * "#TTGPTSettings.pos" in local storage. The provided x and y values are expected
+ * to be integers.
+ *
+ * @param {number} x - The x-coordinate value for the position.
+ * @param {number} y - The y-coordinate value for the position.
+ */
+function DC_setLocalStragePostition(x, y) {
+	if (typeof Storage !== "undefined") {
+		// Create an object with x and y properties
+		var posObj = {
+				x: x,
+				y: y
+		};
+
+		// Convert the object to a JSON string and store it in local storage
+		localStorage.setItem("#TTGPTSettings.pos", JSON.stringify(posObj));
+		// console.log("- Logging from DC_setLocalStragePostition -");
+		// console.log("DC_setLocalStragePostition: Position set successfully.");
+		// console.log("- End logging from DC_setLocalStragePostition -");
+			
+	} else {
+		// console.log("- Logging from DC_setLocalStragePostition -");
+		// console.error("Tried setting the position of #TTGPTSettings in local storage, but Local storage is not supported in this browser.");
+		// console.log("- End logging from DC_setLocalStragePostition -");
+	}
+}
+
 // Perform initialization after jQuery is loaded
 function CN_InitScript() {
 	if (typeof $ === null || typeof $ === undefined) $ = jQuery;
@@ -962,10 +1027,13 @@ function CN_InitScript() {
 			//CN_SayOutLoud("OK");
 		}, 1000);
 	};
-	
+	// Load TTGPTSettings position from local storage
+	const initialPositionData = DC_getLocalStragePostition();
+	const initialX = initialPositionData.x;
+	const initialY = initialPositionData.y;
 	// Add icons on the top right corner
 	jQuery("body").append(
-		"<div style='position: fixed; top: 8px; right: 16px; display: inline-block; " +
+		`<div style='position: fixed; top: ${initialX}px; right: ${initialY}px; display: inline-block; ` +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
 			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
 		
@@ -1054,7 +1122,8 @@ function CN_InitScript() {
 				var top = my_dragging.offset0.top + (e.pageY - my_dragging.pageY0);
 				jQuery(my_dragging.elem).css('right', '');
 				jQuery(my_dragging.elem)
-					.offset({top: top, left: left});
+					.offset({ top: top, left: left });
+				DC_setLocalStragePostition(left, top);
 			}
 			function handle_mouseup(e) {
 				jQuery('body')
