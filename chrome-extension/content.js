@@ -1036,7 +1036,7 @@ function CN_InitScript() {
 	const initialY = initialPositionData.y;
 	// Add icons on the top right corner
 	jQuery("body").append(
-		`<div style='position: fixed; top: ${initialX}px; right: ${initialY}px; display: inline-block; ` +
+		"<div style='position: fixed; top: "+ initialX +"px; right: "+ initialY +"px; display: inline-block; " +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
 			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
 		
