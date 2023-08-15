@@ -967,8 +967,8 @@ function DC_getLocalStragePostition() {
  * "#TTGPTSettings.pos" in local storage. The provided x and y values are expected
  * to be integers.
  *
- * @param {number} x - The x-coordinate value for the position.
- * @param {number} y - The y-coordinate value for the position.
+ * @param {number} x - The x-coordinate value for the position in px.
+ * @param {number} y - The y-coordinate value for the position in px.
  */
 function DC_setLocalStragePostition(x, y) {
 	if (typeof Storage !== "undefined") {
