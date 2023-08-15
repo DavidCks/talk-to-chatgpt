@@ -940,7 +940,7 @@ function DC_getLocalStragePostition() {
 	};
 
 	// Check if local storage is available in the browser
-	if (typeof (Storage) !== "undefined") {
+	if (typeof (localStorage) === "undefined") {
 		// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
 		// console.error("Tried getting the position of #TTGPTSettings but from local storage but Local storage is not supported in this browser.");
 		// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
@@ -971,11 +971,11 @@ function DC_getLocalStragePostition() {
  * @param {number} y - The y-coordinate value for the position in px.
  */
 function DC_setLocalStragePostition(x, y) {
-	if (typeof Storage !== "undefined") {
+	if (typeof (localStorage) !== "undefined") {
 		// Create an object with x and y properties
 		var posObj = {
-				x: x,
-				y: y
+				x: Math.trunc(x),
+				y: Math.trunc(y)
 		};
 
 		// Convert the object to a JSON string and store it in local storage
@@ -1036,7 +1036,7 @@ function CN_InitScript() {
 	const initialY = initialPositionData.y;
 	// Add icons on the top right corner
 	jQuery("body").append(
-		"<div style='position: fixed; top: "+ initialX +"px; right: "+ initialY +"px; display: inline-block; " +
+		"<div style='position: fixed; top: "+ initialY +"px; left: "+ initialX +"px; display: inline-block; " +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
 			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
 		
