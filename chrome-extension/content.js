@@ -1099,7 +1099,7 @@ function DC_ensureTtgptSettingsVisible(posX = undefined, posY = undefined) {
 	const maxPos = DC_getMaxPos();
 	const ttgptSettingsBounds = { x: ttgptSettingsSize.width + posX, y: ttgptSettingsSize.height + posY };
 	var newTtgptSettingsPos = DC_minPos(ttgptSettingsBounds, maxPos, -ttgptSettingsSize.width, -ttgptSettingsSize.height);
-	newTtgptSettingsPos = DC_maxPos(newTtgptSettingsPos, { x: 0, y: 0 });
+	newTtgptSettingsPos = DC_maxPos(newTtgptSettingsPos, { x: 32, y: 0 });
 	console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
 	console.log(`Size: {width: ${ttgptSettingsSize.width}, height: ${ttgptSettingsSize.height}}, Pos: {x: ${posX}, y: ${posY}}, maxPos: {x: ${maxPos.x}, y: ${maxPos.y}}`);
 	console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
@@ -1158,6 +1158,21 @@ function CN_InitScript() {
 		"<div style='position: fixed; top: "+ initialY +"px; left: "+ initialX +"px; display: inline-block; " +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
 			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
+			"<div style='position: absolute; width: 28px; height: 100%; left: -32px; background: #41464c; border-radius: 8px;'>" +
+				"<button id='TTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
+					"<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>"+
+						"<rect x='0' y='0' width='90' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>"+
+						"<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>"+
+					"</svg>"+
+				"</button>" +
+				"<button id='TTGPTSnapToTopRightBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
+					"<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>"+
+						"<rect x='52' y='0' width='38' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>"+
+						"<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" +
+						"<rect x='0' y='0' width='38' height='90' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>"+
+					"</svg>"+
+				"</button>" +
+			"</div>" +
 		
 			// Logo / title
 			"<div style='padding: 4px 40px; border-bottom: 1px solid grey;'>" +
