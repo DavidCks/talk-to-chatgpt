@@ -924,13 +924,99 @@ function CN_CheckCorrectPage() {
 }
 
 /**
+ * compares the x and y coordinates of the given object and returns an object, which has the lowest for each coordinate.
+ * 
+ * ---
+ * @param *Object* {**x**: *int*, **y**: *int*} p1 - An Object with x and y properties in px.
+ * @param *Object* {**x**: *int*, **y**: *int*} p2 - An Object with x and y properties in px.
+ * @param *int* x_offset - offset to be added after the minimum is calculated in px.
+ * @param *int* y_offset - offset to be added after the minimum is calculated in px.
+ * 
+ * ---
+ * @returns {Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px.
+ */
+function DC_minPos(p1, p2, x_offset = 0, y_offset = 0) {
+    const result = {
+        x: Math.min(p1.x, p2.x) + x_offset,
+        y: Math.min(p1.y, p2.y) + y_offset
+    };
+    return result;
+}
+
+/**
+ * compares the x and y coordinates of the given object and returns an object, which has the highest for each coordinate.
+ * 
+ * ---
+ * @param *Object* {**x**: *int*, **y**: *int*} p1 - An Object with x and y properties in px.
+ * @param *Object* {**x**: *int*, **y**: *int*} p2 - An Object with x and y properties in px.
+ * @param *int* x_offset - offset to be added after the maximum is calculated in px.
+ * @param *int* y_offset - offset to be added after the maximum is calculated in px.
+ * 
+ * ---
+ * @returns {Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px.
+ */
+function DC_maxPos(p1, p2, x_offset = 0, y_offset = 0) {
+    const result = {
+        x: Math.max(p1.x, p2.x) + x_offset,
+        y: Math.max(p1.y, p2.y) + y_offset
+    };
+    return result;
+}
+
+/**
+ * Gets the maximum x and y coordinates in pixels for the current viewport.
+ * 
+ * ---
+ * @returns {Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px.
+ */
+function DC_getMaxPos() {
+    const maxX = window.innerWidth;
+    const maxY = window.innerHeight;
+    
+    return { x: maxX, y: maxY };
+}
+/**
+ * Retrieves the DOM element with the ID "#TTGPTSettings" if it exists, or returns undefined if not found.
+ *
+ * @returns *HTMLElement | undefined* - The DOM element with the ID "#TTGPTSettings", or undefined if not found.
+ */
+function DC_getTTGPTSettingsElOrUndefined() {
+	const ttgptSettingsEl = document.getElementById("TTGPTSettings");
+	if (ttgptSettingsEl === undefined || ttgptSettingsEl === null) {
+		return undefined;
+	}
+	return ttgptSettingsEl;
+}
+
+/**
+ * Retrieves the width and height of an element with the ID "TTGPTSettings".
+ * 
+ * ---
+ * @returns {Object {**width**: *int*, **height**: *int*} - An Object with width and height properties in px.
+ */
+function DC_getTTGPTSettingsSize() {
+	const ttgptSettingsEl = DC_getTTGPTSettingsElOrUndefined();
+	if (ttgptSettingsEl === undefined) {
+		return { width: 0, height: 0 };
+	}
+
+	// Get the width and height of the element
+	var width = ttgptSettingsEl.offsetWidth;
+	var height = ttgptSettingsEl.offsetHeight;
+
+	// Return the width and height
+	return { width: width, height: height };
+}
+
+
+/**
  * Retrieves position information for #TTGPTSettings from local storage.
  * 
  * This function attempts to fetch the position information associated with the key
  * "#TTGPTSettings.pos" from local storage. If the key is not present or the JSON parsing
  * fails, default values for position (x: 8, y: 16) are used.
- * 
- * @returns {Object} Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px. 
+ * ---
+ * @returns {Object} Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px.
  */
 function DC_getLocalStragePostition() {
 	var posObj;
@@ -955,7 +1041,7 @@ function DC_getLocalStragePostition() {
 		posObj = defaultPosObject;
 	}
 	// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
-	// console.log(posObj);
+	// console.log(`Size: {w: ${ttgptSettingsSize.width}, h: ${ttgptSettingsSize.height}}, Pos: {x: ${posObj.x}, y: ${posObj.y}}, maxPos: {x: ${maxPos.x}, y: ${maxPos.y}}`);
 	// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
 	return posObj;
 }
@@ -966,7 +1052,7 @@ function DC_getLocalStragePostition() {
  * Sets the position information associated with the key
  * "#TTGPTSettings.pos" in local storage. The provided x and y values are expected
  * to be integers.
- *
+ * ---
  * @param {number} x - The x-coordinate value for the position in px.
  * @param {number} y - The y-coordinate value for the position in px.
  */
@@ -983,11 +1069,44 @@ function DC_setLocalStragePostition(x, y) {
 		// console.log("- Logging from DC_setLocalStragePostition -");
 		// console.log("DC_setLocalStragePostition: Position set successfully.");
 		// console.log("- End logging from DC_setLocalStragePostition -");
-			
 	} else {
 		// console.log("- Logging from DC_setLocalStragePostition -");
 		// console.error("Tried setting the position of #TTGPTSettings in local storage, but Local storage is not supported in this browser.");
 		// console.log("- End logging from DC_setLocalStragePostition -");
+	}
+}
+/**
+ * Ensures that the TTGPT settings element is fully visible within the viewport.
+ *
+ * ---
+ * @param *int* posX - The current x-coordinate position for the TTGPT settings element in px.
+ * @param *int* posY - The current y-coordinate position for the TTGPT settings element in px.
+ */
+function DC_ensureTtgptSettingsVisible(posX = undefined, posY = undefined) {
+	const ttgptSettingsEl = DC_getTTGPTSettingsElOrUndefined();
+	if (ttgptSettingsEl === undefined) {
+		return;
+	}
+	if (posX === undefined) {
+		posX = ttgptSettingsEl.offsetLeft;
+		
+	}
+	if (posY === undefined) {
+		posY = ttgptSettingsEl.offsetTop;
+	}
+
+	const ttgptSettingsSize = DC_getTTGPTSettingsSize();
+	const maxPos = DC_getMaxPos();
+	const ttgptSettingsBounds = { x: ttgptSettingsSize.width + posX, y: ttgptSettingsSize.height + posY };
+	var newTtgptSettingsPos = DC_minPos(ttgptSettingsBounds, maxPos, -ttgptSettingsSize.width, -ttgptSettingsSize.height);
+	newTtgptSettingsPos = DC_maxPos(newTtgptSettingsPos, { x: 0, y: 0 });
+	console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
+	console.log(`Size: {width: ${ttgptSettingsSize.width}, height: ${ttgptSettingsSize.height}}, Pos: {x: ${posX}, y: ${posY}}, maxPos: {x: ${maxPos.x}, y: ${maxPos.y}}`);
+	console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
+	if (ttgptSettingsEl !== undefined) {
+		ttgptSettingsEl.style.left = newTtgptSettingsPos.x + "px";
+		ttgptSettingsEl.style.top = newTtgptSettingsPos.y + "px";
+		DC_setLocalStragePostition(newTtgptSettingsPos.x, newTtgptSettingsPos.y);
 	}
 }
 
@@ -1096,7 +1215,11 @@ function CN_InitScript() {
 			"</div>" +
 		"</div>"
 	);
-	
+	DC_ensureTtgptSettingsVisible();
+	window.addEventListener('resize', function () {
+		DC_ensureTtgptSettingsVisible();
+	});
+
 	setTimeout(function () {
 		// Try and get voices
 		speechSynthesis.getVoices();
@@ -1126,6 +1249,7 @@ function CN_InitScript() {
 				jQuery(my_dragging.elem).css('right', '');
 				jQuery(my_dragging.elem)
 					.offset({ top: top, left: left });
+				DC_ensureTtgptSettingsVisible();
 				DC_setLocalStragePostition(left, top);
 			}
 			function handle_mouseup(e) {
