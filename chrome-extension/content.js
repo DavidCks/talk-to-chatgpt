@@ -121,6 +121,7 @@ function CN_SayOutLoud(text) {
 	// What is the TTS method?
 	if (CN_TTS_ELEVENLABS) {
 		// We are using ElevenLabs, so push message to queue
+		DC_UpdateTranscriptUI(text);
 		CN_SayOutLoudElevenLabs(text);
 		return;
 	}
@@ -134,6 +135,7 @@ function CN_SayOutLoud(text) {
 	msg.rate = CN_TEXT_TO_SPEECH_RATE;
 	msg.pitch = CN_TEXT_TO_SPEECH_PITCH;
 	msg.onstart = () => {
+		DC_UpdateTranscriptUI(msg.text);
 		// Make border green
 		$("#CNStatusBar").css("background", "green");
 		
@@ -146,6 +148,7 @@ function CN_SayOutLoud(text) {
 		CN_TIMEOUT_KEEP_SYNTHESIS_WORKING = setTimeout(CN_KeepSpeechSynthesisActive, 5000);
 	};
 	msg.onend = () => {
+		DC_UpdateTranscriptUI("　");
 		CN_AfterSpeakOutLoudFinished();
 	}
 	CN_IS_READING = true;
@@ -514,6 +517,15 @@ function CN_CheckNewMessages() {
 	setTimeout(CN_CheckNewMessages, 100);
 }
 
+function DC_UpdateTranscriptUI(transcript) {
+	try {
+		const speechTransElement = document.getElementById("DCTTGPTSpokenTextArea");
+		speechTransElement.innerHTML = transcript;
+	} catch (error) {
+		console.error("Couldn't dispay spoken text.");
+	}
+}
+
 // Send a message to the bot (will simply put text in the textarea and simulate a send button click)
 function CN_SendMessage(text) {
 	// Put message in textarea
@@ -607,6 +619,7 @@ function CN_StartSpeechRecognition() {
 	CN_SPEECHREC = ('webkitSpeechRecognition' in window) ? new webkitSpeechRecognition() : new SpeechRecognition();
 	CN_SPEECHREC.continuous = true;
 	CN_SPEECHREC.lang = CN_WANTED_LANGUAGE_SPEECH_REC;
+	
 	CN_SPEECHREC.onstart = () => {
 		// Make bar red
 		$("#CNStatusBar").css("background", "red");
@@ -631,7 +644,7 @@ function CN_StartSpeechRecognition() {
 			if (event.results[i].isFinal)
 				final_transcript += event.results[i][0].transcript;
 		}
-		
+		DC_UpdateTranscriptUI(final_transcript);
 		console.log("Voice recognition: '"+ (final_transcript)+"'");
 		
 		// Empty? https://github.com/C-Nedelcu/talk-to-chatgpt/issues/72
@@ -1110,6 +1123,16 @@ function DC_ensureTtgptSettingsVisible(posX = undefined, posY = undefined) {
 	}
 }
 
+function DC_GetSpokenTextAreaHeigh() {
+	try {
+		const spokenTextAreaElement = document.getElementById("DCTTGPTSpokenTextArea");
+		const spokenTextAreaBounds = spokenTextAreaElement.getBoundingClientRect();
+		return spokenTextAreaBounds.height;
+	} catch (e) {
+		return 0;
+	}
+}
+
 /**
  * Adds snap event listeners to the buttons on the side of the settings that control the positioning of the settings area.
  */
@@ -1128,10 +1151,10 @@ function DC_addSnapEventListeners() {
 				const promptAreaBounds = promptArea.getBoundingClientRect();
 				const promptAreaPos = { x: promptAreaBounds.left, y: promptAreaBounds.top };
 				const promptAreaSize = { width: promptAreaBounds.width, height: promptAreaBounds.height };
-				ttgptSettings.style.top = (promptAreaPos.y - promptAreaSize.height) + "px";
+				ttgptSettings.style.top = (promptAreaPos.y - promptAreaSize.height - DC_GetSpokenTextAreaHeigh()) + "px";
 				ttgptSettings.style.left = promptAreaPos.x + "px";
 				ttgptSettings.style.width = promptAreaSize.width + "px";
-				ttgptSettings.style.height = promptAreaSize.height + "px";
+				ttgptSettings.style.height = promptAreaSize.height + DC_GetSpokenTextAreaHeigh() + "px";
 				DC_setLocalStragePostition(promptAreaPos.x, promptAreaPos.y);
 				
 				const logoArea = document.getElementById("DCTTGPTLogoArea");
@@ -1148,8 +1171,8 @@ function DC_addSnapEventListeners() {
 				logoArea.style.display = "initial";
 
 				const ttgptSettings = document.getElementById("TTGPTSettings");
-				ttgptSettings.style.width = "auto";
-				ttgptSettings.style.height = "auto";
+				ttgptSettings.style.width = "initial";
+				ttgptSettings.style.height = "initial";
 				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
 				const ttgptSettingsSize = { width: ttgptSettingsBounds.width, height: ttgptSettingsBounds.height };
 
@@ -1279,8 +1302,11 @@ function CN_InitScript() {
 							"<button style='font-size: 13px; border: 2px solid grey; padding: 6px 40px; margin: 6px; border-radius: 6px; opacity: 0.7;' id='CNResumeButton'><i class=\"fa-solid fa-play\"></i>&nbsp;&nbsp;RESUME</button>" +
 						"</div>" +
 					"</div>" +
-					
 				"</div>" +
+			"</div>" +
+			//below below logo
+			"<div id='DCTTGPTSpokenTextArea' style='font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
+			"　" +
 			"</div>" +
 		"</div>"
 	);
