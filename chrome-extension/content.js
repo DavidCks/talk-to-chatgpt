@@ -1021,7 +1021,7 @@ function DC_getTTGPTSettingsSize() {
 function DC_getLocalStragePostition() {
 	var posObj;
 	var defaultPosObject = {
-		x: 8,
+		x: window.innerWidth - 8,
 		y: 16
 	};
 
@@ -1110,6 +1110,60 @@ function DC_ensureTtgptSettingsVisible(posX = undefined, posY = undefined) {
 	}
 }
 
+/**
+ * Adds snap event listeners to the buttons on the side of the settings that control the positioning of the settings area.
+ */
+function DC_addSnapEventListeners() {
+	const snapToTextareaBtn = document.getElementById("TTGPTSnapToTextareaBtn");
+	const snapToTopRightBtn = document.getElementById("TTGPTSnapToTopRightBtn");
+	const eventNames = ["click", "touchstart"];
+	for (let i = 0; i < eventNames.length; i++) {
+		const eventName = eventNames[i];
+		snapToTextareaBtn.addEventListener(eventName, function () {
+			try {
+				const ttgptSettings = document.getElementById("TTGPTSettings");
+				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
+				const ttgptSettingsSize = { width: ttgptSettingsBounds.width, height: ttgptSettingsBounds.height };
+				const promptArea = document.getElementById("prompt-textarea").parentElement;
+				const promptAreaBounds = promptArea.getBoundingClientRect();
+				const promptAreaPos = { x: promptAreaBounds.left, y: promptAreaBounds.top };
+				const promptAreaSize = { width: promptAreaBounds.width, height: promptAreaBounds.height };
+				ttgptSettings.style.top = (promptAreaPos.y - promptAreaSize.height) + "px";
+				ttgptSettings.style.left = promptAreaPos.x + "px";
+				ttgptSettings.style.width = promptAreaSize.width + "px";
+				ttgptSettings.style.height = promptAreaSize.height + "px";
+				DC_setLocalStragePostition(promptAreaPos.x, promptAreaPos.y);
+				
+				const logoArea = document.getElementById("TTGPTLogoArea");
+				logoArea.style.display = "none";
+			} catch (error) {
+				console.error("Couldn't snap TTGPT Settings to the text area. Error was:");
+				console.error(error);
+			}
+			DC_ensureTtgptSettingsVisible();
+		});
+		snapToTopRightBtn.addEventListener(eventName, function () {
+			try {
+				const logoArea = document.getElementById("TTGPTLogoArea");
+				logoArea.style.display = "initial";
+
+				const ttgptSettings = document.getElementById("TTGPTSettings");
+				ttgptSettings.style.width = "auto";
+				ttgptSettings.style.height = "auto";
+				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
+				const ttgptSettingsSize = { width: ttgptSettingsBounds.width, height: ttgptSettingsBounds.height };
+
+				ttgptSettings.style.top = "16px";
+				ttgptSettings.style.left = (window.innerWidth - 8 - ttgptSettingsSize.width) + "px";
+			} catch (error) {
+				console.error("Couldn't snap TTGPT Settings to the text area. Error was:");
+				console.error(error);
+			}
+			DC_ensureTtgptSettingsVisible();
+		});
+	}
+}
+
 // Perform initialization after jQuery is loaded
 function CN_InitScript() {
 	if (typeof $ === null || typeof $ === undefined) $ = jQuery;
@@ -1175,11 +1229,11 @@ function CN_InitScript() {
 			"</div>" +
 		
 			// Logo / title
-			"<div style='padding: 4px 40px; border-bottom: 1px solid grey;'>" +
+			"<div id='TTGPTLogoArea' style='padding: 4px 40px; border-bottom: 1px solid grey;'>" + //4px
 				"<a href='https://github.com/C-Nedelcu/talk-to-chatgpt' " +
-					"style='display: inline-block; font-size: 20px; line-height: 80%; padding: 8px 0;' " +
+					"style='display: inline-block; font-size: 20px; line-height: 80%; padding: 8px 0;' " + //20px + 8px
 					"target=_blank title='Visit project website'>TALK-TO-ChatGPT<br />" +
-					"<div style='text-align: right; font-size: 12px; color: grey'>V2.6.2</div>" +
+					"<div style='text-align: right; font-size: 12px; color: grey'>V2.6.2</div>" + //12px
 				"</a>" +
 			"</div>" +
 			
@@ -1234,6 +1288,7 @@ function CN_InitScript() {
 	window.addEventListener('resize', function () {
 		DC_ensureTtgptSettingsVisible();
 	});
+	DC_addSnapEventListeners();
 
 	setTimeout(function () {
 		// Try and get voices
