@@ -981,7 +981,7 @@ function DC_getMaxPos() {
  * @returns *HTMLElement | undefined* - The DOM element with the ID "#TTGPTSettings", or undefined if not found.
  */
 function DC_getTTGPTSettingsElOrUndefined() {
-	const ttgptSettingsEl = document.getElementById("TTGPTSettings");
+	const ttgptSettingsEl = document.getElementById("DCTTGPTSettings");
 	if (ttgptSettingsEl === undefined || ttgptSettingsEl === null) {
 		return undefined;
 	}
@@ -989,7 +989,7 @@ function DC_getTTGPTSettingsElOrUndefined() {
 }
 
 /**
- * Retrieves the width and height of an element with the ID "TTGPTSettings".
+ * Retrieves the width and height of an element with the ID "DCTTGPTSettings".
  * 
  * ---
  * @returns {Object {**width**: *int*, **height**: *int*} - An Object with width and height properties in px.
@@ -1114,14 +1114,14 @@ function DC_ensureTtgptSettingsVisible(posX = undefined, posY = undefined) {
  * Adds snap event listeners to the buttons on the side of the settings that control the positioning of the settings area.
  */
 function DC_addSnapEventListeners() {
-	const snapToTextareaBtn = document.getElementById("TTGPTSnapToTextareaBtn");
-	const snapToTopRightBtn = document.getElementById("TTGPTSnapToTopRightBtn");
+	const snapToTextareaBtn = document.getElementById("DCTTGPTSnapToTextareaBtn");
+	const snapToTopRightBtn = document.getElementById("DCTTGPTSnapToTopRightBtn");
 	const eventNames = ["click", "touchstart"];
 	for (let i = 0; i < eventNames.length; i++) {
 		const eventName = eventNames[i];
 		snapToTextareaBtn.addEventListener(eventName, function () {
 			try {
-				const ttgptSettings = document.getElementById("TTGPTSettings");
+				const ttgptSettings = document.getElementById("DCTTGPTSettings");
 				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
 				const ttgptSettingsSize = { width: ttgptSettingsBounds.width, height: ttgptSettingsBounds.height };
 				const promptArea = document.getElementById("prompt-textarea").parentElement;
@@ -1134,7 +1134,7 @@ function DC_addSnapEventListeners() {
 				ttgptSettings.style.height = promptAreaSize.height + "px";
 				DC_setLocalStragePostition(promptAreaPos.x, promptAreaPos.y);
 				
-				const logoArea = document.getElementById("TTGPTLogoArea");
+				const logoArea = document.getElementById("DCTTGPTLogoArea");
 				logoArea.style.display = "none";
 			} catch (error) {
 				console.error("Couldn't snap TTGPT Settings to the text area. Error was:");
@@ -1144,10 +1144,10 @@ function DC_addSnapEventListeners() {
 		});
 		snapToTopRightBtn.addEventListener(eventName, function () {
 			try {
-				const logoArea = document.getElementById("TTGPTLogoArea");
+				const logoArea = document.getElementById("DCTTGPTLogoArea");
 				logoArea.style.display = "initial";
 
-				const ttgptSettings = document.getElementById("TTGPTSettings");
+				const ttgptSettings = document.getElementById("DCTTGPTSettings");
 				ttgptSettings.style.width = "auto";
 				ttgptSettings.style.height = "auto";
 				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
@@ -1211,15 +1211,15 @@ function CN_InitScript() {
 	jQuery("body").append(
 		"<div style='position: fixed; top: "+ initialY +"px; left: "+ initialX +"px; display: inline-block; " +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
-			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
+			"cursor: move; font-weight: bold; z-index: 1111;' id='DCTTGPTSettings'>" +
 			"<div style='position: absolute; width: 28px; height: 100%; left: -32px; background: #41464c; border-radius: 8px;'>" +
-				"<button id='TTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
+				"<button id='DCTTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
 					"<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>"+
 						"<rect x='0' y='0' width='90' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>"+
 						"<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>"+
 					"</svg>"+
 				"</button>" +
-				"<button id='TTGPTSnapToTopRightBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
+				"<button id='DCTTGPTSnapToTopRightBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
 					"<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>"+
 						"<rect x='52' y='0' width='38' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>"+
 						"<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" +
@@ -1229,7 +1229,7 @@ function CN_InitScript() {
 			"</div>" +
 		
 			// Logo / title
-			"<div id='TTGPTLogoArea' style='padding: 4px 40px; border-bottom: 1px solid grey;'>" + //4px
+			"<div id='DCTTGPTLogoArea' style='padding: 4px 40px; border-bottom: 1px solid grey;'>" + //4px
 				"<a href='https://github.com/C-Nedelcu/talk-to-chatgpt' " +
 					"style='display: inline-block; font-size: 20px; line-height: 80%; padding: 8px 0;' " + //20px + 8px
 					"target=_blank title='Visit project website'>TALK-TO-ChatGPT<br />" +
@@ -1280,7 +1280,7 @@ function CN_InitScript() {
 						"</div>" +
 					"</div>" +
 					
-		"</div>" +
+				"</div>" +
 			"</div>" +
 		"</div>"
 	);
