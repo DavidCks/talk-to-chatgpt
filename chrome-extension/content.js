@@ -981,7 +981,7 @@ function DC_getMaxPos() {
  * @returns *HTMLElement | undefined* - The DOM element with the ID "#TTGPTSettings", or undefined if not found.
  */
 function DC_getTTGPTSettingsElOrUndefined() {
-	const ttgptSettingsEl = document.getElementById("DCTTGPTSettings");
+	const ttgptSettingsEl = document.getElementById("TTGPTSettings");
 	if (ttgptSettingsEl === undefined || ttgptSettingsEl === null) {
 		return undefined;
 	}
@@ -989,7 +989,7 @@ function DC_getTTGPTSettingsElOrUndefined() {
 }
 
 /**
- * Retrieves the width and height of an element with the ID "DCTTGPTSettings".
+ * Retrieves the width and height of an element with the ID "TTGPTSettings".
  * 
  * ---
  * @returns {Object {**width**: *int*, **height**: *int*} - An Object with width and height properties in px.
@@ -1121,7 +1121,7 @@ function DC_addSnapEventListeners() {
 		const eventName = eventNames[i];
 		snapToTextareaBtn.addEventListener(eventName, function () {
 			try {
-				const ttgptSettings = document.getElementById("DCTTGPTSettings");
+				const ttgptSettings = document.getElementById("TTGPTSettings");
 				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
 				const ttgptSettingsSize = { width: ttgptSettingsBounds.width, height: ttgptSettingsBounds.height };
 				const promptArea = document.getElementById("prompt-textarea").parentElement;
@@ -1147,7 +1147,7 @@ function DC_addSnapEventListeners() {
 				const logoArea = document.getElementById("DCTTGPTLogoArea");
 				logoArea.style.display = "initial";
 
-				const ttgptSettings = document.getElementById("DCTTGPTSettings");
+				const ttgptSettings = document.getElementById("TTGPTSettings");
 				ttgptSettings.style.width = "auto";
 				ttgptSettings.style.height = "auto";
 				const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
@@ -1211,7 +1211,7 @@ function CN_InitScript() {
 	jQuery("body").append(
 		"<div style='position: fixed; top: "+ initialY +"px; left: "+ initialX +"px; display: inline-block; " +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
-			"cursor: move; font-weight: bold; z-index: 1111;' id='DCTTGPTSettings'>" +
+			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
 			"<div style='position: absolute; width: 28px; height: 100%; left: -32px; background: #41464c; border-radius: 8px;'>" +
 				"<button id='DCTTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
 					"<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>"+
