@@ -1020,7 +1020,39 @@ function DC_getTTGPTSettingsSize() {
 	// Return the width and height
 	return { width: width, height: height };
 }
+/**
+ * Retrieves position information for #TTGPTSettings from local storage.
+ * 
+ * This function attempts to fetch the size information associated with the key
+ * "#TTGPTSettings.size" from local storage. If the key is not present or the JSON parsing
+ * fails, default values for position (width: 0, height: 0) are used.
+ * ---
+ * @returns {Object} Object {**width**: *int*, **height**: *int*} - An Object with width and height properties in px.
+ */
+function DC_getLocalStrageSize() {
+	var sizeObj;
+	var defaultSizeObject = {
+		width: 0,
+		height: 0
+	};
 
+	// Check if local storage is available in the browser
+	if (typeof (localStorage) === "undefined") {
+		// console.log("- Logging from DC_fetchPostitionFromLocalStrage -");
+		// console.error("Tried getting the position of #TTGPTSettings but from local storage but Local storage is not supported in this browser.");
+		// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
+		return defaultSizeObject;
+	}
+
+	// Get the JSON string from local storage
+	var jsonStr = localStorage.getItem("#TTGPTSettings.size");
+	// Parse the JSON string to an object or use default values
+	sizeObj = JSON.parse(jsonStr);
+	if (sizeObj == null) {
+		sizeObj = defaultSizeObject;
+	}
+	return sizeObj;
+}
 
 /**
  * Retrieves position information for #TTGPTSettings from local storage.
@@ -1031,7 +1063,7 @@ function DC_getTTGPTSettingsSize() {
  * ---
  * @returns {Object} Object {**x**: *int*, **y**: *int*} - An Object with x and y properties in px.
  */
-function DC_getLocalStragePostition() {
+function DC_getLocalStoragePostition() {
 	var posObj;
 	var defaultPosObject = {
 		x: window.innerWidth - 8,
@@ -1058,6 +1090,38 @@ function DC_getLocalStragePostition() {
 	// console.log("- End logging from DC_fetchPostitionFromLocalStrage -");
 	return posObj;
 }
+
+
+/**
+ * Sets size information in local storage.
+ *
+ * Sets the size information associated with the key
+ * "#TTGPTSettings.size" in local storage. The provided width and height values are expected
+ * to be integers.
+ * ---
+ * @param {number} width - The width value for the element in px.
+ * @param {number} height - height value for the element in px.
+ */
+function DC_setLocalStrageSize(width, height) {
+	if (typeof (localStorage) !== "undefined") {
+		// Create an object with x and y properties
+		var sizeObj = {
+				width: width,
+				height: height
+		};
+
+		// Convert the object to a JSON string and store it in local storage
+		localStorage.setItem("#TTGPTSettings.size", JSON.stringify(sizeObj));
+		// console.log("- Logging from DC_setLocalStrageSize -");
+		// console.log("DC_setLocalStrageSize: Size set successfully.");
+		// console.log("- End logging from DC_setLocalStrageSize -");
+	} else {
+		// console.log("- Logging from DC_setLocalStrageSize -");
+		// console.error("Tried setting the size of #TTGPTSettings in local storage, but Local storage is not supported in this browser.");
+		// console.log("- End logging from DC_setLocalStrageSize -");
+	}
+}
+
 
 /**
  * Sets position information in local storage.
@@ -1088,6 +1152,57 @@ function DC_setLocalStragePostition(x, y) {
 		// console.log("- End logging from DC_setLocalStragePostition -");
 	}
 }
+
+/**
+ * Sets the style string for the TTGPT logo.
+ *
+ * ---
+ * @param {bool} tf - boolean to determine visibility.
+ */
+function DC_setLocalStorageLogoVisibleStyle(tf) {
+	if (typeof (localStorage) !== "undefined") {
+		// Create an object with x and y properties
+		var styleString = "";
+		if (!tf) {
+			styleString = "display: none; "
+		}
+		localStorage.setItem("#TTGPTSettings.logoDisplayStyle", styleString);
+	} else {
+		// console.log("- Logging from DC_setLocalStorageLogoVisibleStyle -");
+		// console.error("Tried setting the visibility of #TTGPTSettings' logo, but Local storage is not supported in this browser.");
+		// console.log("- End logging from DC_setLocalStorageLogoVisibleStyle -");
+	}
+}
+
+/**
+ * Retrieves an inline style string determining the visibility of the logo of #TTGPTSettings from local storage.
+ * 
+ * This function attempts to fetch the style string associated with the key
+ * "#TTGPTSettings.logoDisplayStyle" from local storage. If the key is not present,
+ * defaults to empty string ("")
+ * ---
+ * @returns {String} *string* - A css inline style string like "display: none" or empty string
+ */
+function DC_getLocalStorageLogoVisibleStyle() {
+	var styleString;
+	var defaultStyleString = "";
+
+	// Check if local storage is available in the browser
+	if (typeof (localStorage) === "undefined") {
+		// console.log("- Logging from DC_getLogoVisibleStyle -");
+		// console.error("Tried getting the display style for the logo of #TTGPTSettings but from local storage is not supported in this browser.");
+		// console.log("- End logging from DC_getLogoVisibleStyle -");
+		return defaultStyleString;
+	}
+
+	// Get string from local storage
+	var styleString = localStorage.getItem("#TTGPTSettings.logoDisplayStyle");
+	if (styleString == undefined || styleString == null) {
+		styleString = defaultStyleString;
+	}
+	return styleString;
+}
+
 /**
  * Ensures that the TTGPT settings element is fully visible within the viewport.
  *
@@ -1156,6 +1271,8 @@ function DC_addSnapEventListeners() {
 				ttgptSettings.style.width = promptAreaSize.width + "px";
 				ttgptSettings.style.height = promptAreaSize.height + DC_GetSpokenTextAreaHeigh() + "px";
 				DC_setLocalStragePostition(promptAreaPos.x, promptAreaPos.y);
+				DC_setLocalStrageSize(promptAreaSize.width, promptAreaSize.height + DC_GetSpokenTextAreaHeigh());
+				DC_setLocalStorageLogoVisibleStyle(false);
 				
 				const logoArea = document.getElementById("DCTTGPTLogoArea");
 				logoArea.style.display = "none";
@@ -1178,6 +1295,9 @@ function DC_addSnapEventListeners() {
 
 				ttgptSettings.style.top = "16px";
 				ttgptSettings.style.left = (window.innerWidth - 8 - ttgptSettingsSize.width) + "px";
+				DC_setLocalStragePostition((window.innerWidth - 8 - ttgptSettingsSize.width), 16);
+				DC_setLocalStrageSize(0, 0);
+				DC_setLocalStorageLogoVisibleStyle(true);
 			} catch (error) {
 				console.error("Couldn't snap TTGPT Settings to the text area. Error was:");
 				console.error(error);
@@ -1227,15 +1347,30 @@ function CN_InitScript() {
 		}, 1000);
 	};
 	// Load TTGPTSettings position from local storage
-	const initialPositionData = DC_getLocalStragePostition();
+	const initialPositionData = DC_getLocalStoragePostition();
 	const initialX = initialPositionData.x;
 	const initialY = initialPositionData.y;
+
+	const initialSizeData = DC_getLocalStrageSize();
+	const initialWidth = initialSizeData.width;
+	const initialHeight = initialSizeData.height;
+	var widthInlineStyle = "";
+	var heightInlineStyle = "";
+	if (initialWidth > 0) {
+		widthInlineStyle = "width: " + initialWidth + "px;";
+	}
+	if (initialHeight > 0) {
+		heightInlineStyle = "height: " + initialHeight + "px;";
+	}
+
+	var logoVisibleInlineStyle = DC_getLocalStorageLogoVisibleStyle();
+	
 	// Add icons on the top right corner
 	jQuery("body").append(
-		"<div style='position: fixed; top: "+ initialY +"px; left: "+ initialX +"px; display: inline-block; " +
+		"<div style='"+ widthInlineStyle + heightInlineStyle + " position: fixed; top: "+ initialY +"px; left: "+ initialX +"px; display: inline-block; " +
 			"background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
 			"cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
-			"<div style='position: absolute; width: 28px; height: 100%; left: -32px; background: #41464c; border-radius: 8px;'>" +
+			"<div style='position: absolute; width: 28px; left: -32px; background: #41464c; border-radius: 8px;'>" +
 				"<button id='DCTTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
 					"<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>"+
 						"<rect x='0' y='0' width='90' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>"+
@@ -1252,7 +1387,7 @@ function CN_InitScript() {
 			"</div>" +
 		
 			// Logo / title
-			"<div id='DCTTGPTLogoArea' style='padding: 4px 40px; border-bottom: 1px solid grey;'>" + //4px
+			"<div id='DCTTGPTLogoArea' style='"+ logoVisibleInlineStyle +" padding: 4px 40px; border-bottom: 1px solid grey;'>" + //4px
 				"<a href='https://github.com/C-Nedelcu/talk-to-chatgpt' " +
 					"style='display: inline-block; font-size: 20px; line-height: 80%; padding: 8px 0;' " + //20px + 8px
 					"target=_blank title='Visit project website'>TALK-TO-ChatGPT<br />" +
@@ -1347,6 +1482,7 @@ function CN_InitScript() {
 					.offset({ top: top, left: left });
 				DC_ensureTtgptSettingsVisible();
 				DC_setLocalStragePostition(left, top);
+				
 			}
 			function handle_mouseup(e) {
 				jQuery('body')
