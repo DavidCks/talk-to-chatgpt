@@ -121,7 +121,7 @@ function CN_SayOutLoud(text) {
 	// What is the TTS method?
 	if (CN_TTS_ELEVENLABS) {
 		// We are using ElevenLabs, so push message to queue
-		DC_UpdateTranscriptUI(text);
+		DC_setSpokenTextAreaText(text);
 		CN_SayOutLoudElevenLabs(text);
 		return;
 	}
@@ -135,7 +135,7 @@ function CN_SayOutLoud(text) {
 	msg.rate = CN_TEXT_TO_SPEECH_RATE;
 	msg.pitch = CN_TEXT_TO_SPEECH_PITCH;
 	msg.onstart = () => {
-		DC_UpdateTranscriptUI(msg.text);
+		DC_setSpokenTextAreaText(msg.text);
 		// Make border green
 		$("#CNStatusBar").css("background", "green");
 		
@@ -148,7 +148,7 @@ function CN_SayOutLoud(text) {
 		CN_TIMEOUT_KEEP_SYNTHESIS_WORKING = setTimeout(CN_KeepSpeechSynthesisActive, 5000);
 	};
 	msg.onend = () => {
-		DC_UpdateTranscriptUI("　");
+		DC_setSpokenTextAreaText("　");
 		CN_AfterSpeakOutLoudFinished();
 	}
 	CN_IS_READING = true;
@@ -517,7 +517,7 @@ function CN_CheckNewMessages() {
 	setTimeout(CN_CheckNewMessages, 100);
 }
 
-function DC_UpdateTranscriptUI(transcript) {
+function DC_setSpokenTextAreaText(transcript) {
 	try {
 		const speechTransElement = document.getElementById("DCTTGPTSpokenTextArea");
 		speechTransElement.innerHTML = transcript;
@@ -644,7 +644,7 @@ function CN_StartSpeechRecognition() {
 			if (event.results[i].isFinal)
 				final_transcript += event.results[i][0].transcript;
 		}
-		DC_UpdateTranscriptUI(final_transcript);
+		DC_setSpokenTextAreaText(final_transcript);
 		console.log("Voice recognition: '"+ (final_transcript)+"'");
 		
 		// Empty? https://github.com/C-Nedelcu/talk-to-chatgpt/issues/72
@@ -1154,7 +1154,7 @@ function DC_setLocalStragePostition(x, y) {
 }
 
 /**
- * Sets the style string for the TTGPT logo.
+ * Sets the visibility for the TTGPT logo to either visible (true) or invisible (false).
  *
  * ---
  * @param {bool} tf - boolean to determine visibility.
