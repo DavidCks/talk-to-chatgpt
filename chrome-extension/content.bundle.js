@@ -1070,6 +1070,12 @@ function DC_PrepareUtterances(utteranceList) {
       //CN_KeepSpeechSynthesisActive,
       5000);
     };
+    utteranceList[index].onpause = function () {
+      DC_setSpokenTextAreaText("");
+    };
+    utteranceList[index].onerror = function () {
+      DC_setSpokenTextAreaText("");
+    };
     utteranceList[index].onend = function () {
       DC_setSpokenTextAreaText("");
       CN_AfterSpeakOutLoudFinished();
@@ -2125,15 +2131,6 @@ function DC_ensureTtgptSettingsVisible() {
     DC_setLocalStragePostition(newTtgptSettingsPos.x, newTtgptSettingsPos.y);
   }
 }
-function DC_GetSpokenTextAreaHeigh() {
-  try {
-    var spokenTextAreaElement = document.getElementById("DCTTGPTSpokenTextArea");
-    var spokenTextAreaBounds = spokenTextAreaElement.getBoundingClientRect();
-    return spokenTextAreaBounds.height;
-  } catch (e) {
-    return 0;
-  }
-}
 
 /**
  * Adds snap event listeners to the buttons on the side of the settings that control the positioning of the settings area.
@@ -2146,6 +2143,15 @@ function DC_addSnapEventListeners() {
     var eventName = eventNames[i];
     snapToTextareaBtn.addEventListener(eventName, function () {
       try {
+        //snap the spoken text area to the top of the settings panel and grow upwards
+        var spokenTextAreaElement = document.getElementById("DCTTGPTSpokenTextArea");
+        spokenTextAreaElement.style.position = "absolute";
+      } catch (error) {
+        console.error("Couldn't snap DCTTGPT Spoken Text Area to the top of the TTGPT Settings area. Error was:");
+        console.error(error);
+      }
+      try {
+        //snap the text area
         var ttgptSettings = document.getElementById("TTGPTSettings");
         var ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
         var ttgptSettingsSize = {
@@ -2162,12 +2168,12 @@ function DC_addSnapEventListeners() {
           width: promptAreaBounds.width,
           height: promptAreaBounds.height
         };
-        ttgptSettings.style.top = promptAreaPos.y - promptAreaSize.height - DC_GetSpokenTextAreaHeigh() + "px";
+        ttgptSettings.style.top = promptAreaPos.y - promptAreaSize.height + "px";
         ttgptSettings.style.left = promptAreaPos.x + "px";
         ttgptSettings.style.width = promptAreaSize.width + "px";
-        ttgptSettings.style.height = promptAreaSize.height + DC_GetSpokenTextAreaHeigh() + "px";
+        ttgptSettings.style.height = promptAreaSize.height + "px";
         DC_setLocalStragePostition(promptAreaPos.x, promptAreaPos.y);
-        DC_setLocalStrageSize(promptAreaSize.width, promptAreaSize.height + DC_GetSpokenTextAreaHeigh());
+        DC_setLocalStrageSize(promptAreaSize.width, promptAreaSize.height);
         DC_setLocalStorageLogoVisibleStyle(false);
         var logoArea = document.getElementById("DCTTGPTLogoArea");
         logoArea.style.display = "none";
@@ -2178,6 +2184,14 @@ function DC_addSnapEventListeners() {
       DC_ensureTtgptSettingsVisible();
     });
     snapToTopRightBtn.addEventListener(eventName, function () {
+      try {
+        //snap the spoken text area to the bottom of the settings panel and grow downwards
+        var spokenTextAreaElement = document.getElementById("DCTTGPTSpokenTextArea");
+        spokenTextAreaElement.style.position = "relative";
+      } catch (error) {
+        console.error("Couldn't snap DCTTGPT Spoken Text Area to the top of the TTGPT Settings area. Error was:");
+        console.error(error);
+      }
       try {
         var logoArea = document.getElementById("DCTTGPTLogoArea");
         logoArea.style.display = "initial";
@@ -2290,7 +2304,7 @@ function CN_InitScript() {
   // Pause bar - click button to resume
   "<div style='padding-top: 12px; padding-bottom: 12px; display: none;' id='CNSuspendedArea'>" + "<div style='font-size: 11px; color: grey;'><b>CONVERSATION PAUSED</b><br />Click button below or speak the pause word to resume</div>" + "<div style='padding: 10px;'>" + "<button style='font-size: 13px; border: 2px solid grey; padding: 6px 40px; margin: 6px; border-radius: 6px; opacity: 0.7;' id='CNResumeButton'><i class=\"fa-solid fa-play\"></i>&nbsp;&nbsp;RESUME</button>" + "</div>" + "</div>" + "</div>" + "</div>" +
   //below below logo
-  "<div id='DCTTGPTSpokenTextArea' style='font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" + "　" + "</div>" + "</div>");
+  "<div id='DCTTGPTSpokenTextArea' style='position: relative; width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" + "　" + "</div>" + "</div>");
   DC_ensureTtgptSettingsVisible();
   window.addEventListener("resize", function () {
     DC_ensureTtgptSettingsVisible();
@@ -3080,6 +3094,9 @@ function _getUtterances() {
           classifiedStrings.forEach(function (_ref3) {
             var lang = _ref3.lang,
               sentence = _ref3.sentence;
+            if (lang === undefined || lang === null || lang === "") {
+              lang = navigator.language || navigator.userLanguage;
+            }
             var utterance = new SpeechSynthesisUtterance(sentence);
             utterance.lang = lang.split("-")[0];
             var voices = window.speechSynthesis.getVoices();

@@ -192,6 +192,12 @@ function DC_PrepareUtterances(utteranceList) {
         5000
       );
     };
+    utteranceList[index].onpause = () => {
+      DC_setSpokenTextAreaText("");
+    };
+    utteranceList[index].onerror = () => {
+      DC_setSpokenTextAreaText("");
+    };
     utteranceList[index].onend = () => {
       DC_setSpokenTextAreaText("");
       CN_AfterSpeakOutLoudFinished();
@@ -1389,18 +1395,6 @@ function DC_ensureTtgptSettingsVisible(posX = undefined, posY = undefined) {
   }
 }
 
-function DC_GetSpokenTextAreaHeigh() {
-  try {
-    const spokenTextAreaElement = document.getElementById(
-      "DCTTGPTSpokenTextArea"
-    );
-    const spokenTextAreaBounds = spokenTextAreaElement.getBoundingClientRect();
-    return spokenTextAreaBounds.height;
-  } catch (e) {
-    return 0;
-  }
-}
-
 /**
  * Adds snap event listeners to the buttons on the side of the settings that control the positioning of the settings area.
  */
@@ -1412,6 +1406,19 @@ function DC_addSnapEventListeners() {
     const eventName = eventNames[i];
     snapToTextareaBtn.addEventListener(eventName, function () {
       try {
+        //snap the spoken text area to the top of the settings panel and grow upwards
+        const spokenTextAreaElement = document.getElementById(
+          "DCTTGPTSpokenTextArea"
+        );
+        spokenTextAreaElement.style.position = "absolute";
+      } catch (error) {
+        console.error(
+          "Couldn't snap DCTTGPT Spoken Text Area to the top of the TTGPT Settings area. Error was:"
+        );
+        console.error(error);
+      }
+      try {
+        //snap the text area
         const ttgptSettings = document.getElementById("TTGPTSettings");
         const ttgptSettingsBounds = ttgptSettings.getBoundingClientRect();
         const ttgptSettingsSize = {
@@ -1430,19 +1437,12 @@ function DC_addSnapEventListeners() {
           height: promptAreaBounds.height,
         };
         ttgptSettings.style.top =
-          promptAreaPos.y -
-          promptAreaSize.height -
-          DC_GetSpokenTextAreaHeigh() +
-          "px";
+          promptAreaPos.y - promptAreaSize.height + "px";
         ttgptSettings.style.left = promptAreaPos.x + "px";
         ttgptSettings.style.width = promptAreaSize.width + "px";
-        ttgptSettings.style.height =
-          promptAreaSize.height + DC_GetSpokenTextAreaHeigh() + "px";
+        ttgptSettings.style.height = promptAreaSize.height + "px";
         DC_setLocalStragePostition(promptAreaPos.x, promptAreaPos.y);
-        DC_setLocalStrageSize(
-          promptAreaSize.width,
-          promptAreaSize.height + DC_GetSpokenTextAreaHeigh()
-        );
+        DC_setLocalStrageSize(promptAreaSize.width, promptAreaSize.height);
         DC_setLocalStorageLogoVisibleStyle(false);
 
         const logoArea = document.getElementById("DCTTGPTLogoArea");
@@ -1456,6 +1456,18 @@ function DC_addSnapEventListeners() {
       DC_ensureTtgptSettingsVisible();
     });
     snapToTopRightBtn.addEventListener(eventName, function () {
+      try {
+        //snap the spoken text area to the bottom of the settings panel and grow downwards
+        const spokenTextAreaElement = document.getElementById(
+          "DCTTGPTSpokenTextArea"
+        );
+        spokenTextAreaElement.style.position = "relative";
+      } catch (error) {
+        console.error(
+          "Couldn't snap DCTTGPT Spoken Text Area to the top of the TTGPT Settings area. Error was:"
+        );
+        console.error(error);
+      }
       try {
         const logoArea = document.getElementById("DCTTGPTLogoArea");
         logoArea.style.display = "initial";
@@ -1632,7 +1644,7 @@ function CN_InitScript() {
       "</div>" +
       "</div>" +
       //below below logo
-      "<div id='DCTTGPTSpokenTextArea' style='font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
+      "<div id='DCTTGPTSpokenTextArea' style='position: relative; width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
       "　" +
       "</div>" +
       "</div>"
@@ -2625,6 +2637,9 @@ async function getUtterances(text) {
   utterances[0].lang = classifiedStrings[0].lang;
   classifiedStrings.shift();
   classifiedStrings.forEach(({ lang, sentence }) => {
+    if (lang === undefined || lang === null || lang === "") {
+      lang = navigator.language || navigator.userLanguage;
+    }
     const utterance = new SpeechSynthesisUtterance(sentence);
     utterance.lang = lang.split("-")[0];
     const voices = window.speechSynthesis.getVoices();
