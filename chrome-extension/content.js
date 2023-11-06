@@ -1611,6 +1611,7 @@ function CN_InitScript() {
       "</svg>" +
       "</button>" +
       "</div>" +
+      "<div id='DCTTGPTControllsArea' style='opacity: 0.5;'>" +
       // Logo / title
       "<div id='DCTTGPTLogoArea' style='" +
       logoVisibleInlineStyle +
@@ -1649,7 +1650,7 @@ function CN_InitScript() {
       "</td>" +
       "</tr></table>" +
       // Colored bar - transparent by default, red when mic on, green when bot speaks
-      "<div style='padding-top: 12px; padding-bottom: 6px;'>" +
+      "<div style='position: absolute; top: -4px; width: calc(100% - 16px); z-index: 999;'>" +
       "<div id='CNStatusBar' style='background: grey; width: 100%; height: 8px; border-radius: 4px; overflow: hidden;'>&nbsp;</div>" +
       "</div>" +
       // Pause bar - click button to resume
@@ -1661,14 +1662,26 @@ function CN_InitScript() {
       "</div>" +
       "</div>" +
       "</div>" +
+      "</div>" +
       //below below logo
+      "<div>" +
       "<div id='DCTTGPTSpokenTextArea' style='" +
       DC_getSpokenTextAreaPositionStyle() +
-      " width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
-      "　" +
+      " width: 100%; bottom: 100%; margin-bottom: 4px; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
+      "" +
+      "</div>" +
       "</div>" +
       "</div>"
   );
+  // add mouseover event triggering opacity
+  const settingsElement = document.getElementById("DCTTGPTControllsArea");
+  settingsElement.addEventListener("mouseover", function () {
+    this.style.opacity = "1";
+  });
+
+  settingsElement.addEventListener("mouseout", function () {
+    this.style.opacity = "0.5"; // Revert to the default or previous state
+  });
   DC_ensureTtgptSettingsVisible();
   window.addEventListener("resize", function () {
     DC_ensureTtgptSettingsVisible();

@@ -2290,7 +2290,7 @@ function CN_InitScript() {
   var logoVisibleInlineStyle = DC_getLocalStorageLogoVisibleStyle();
 
   // Add icons on the top right corner
-  jQuery("body").append("<div style='" + widthInlineStyle + heightInlineStyle + " position: fixed; top: " + initialY + "px; left: " + initialX + "px; display: inline-block; " + "background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" + "cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" + "<div style='position: absolute; width: 28px; left: -32px; background: #41464c; border-radius: 8px;'>" + "<button id='DCTTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" + "<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>" + "<rect x='0' y='0' width='90' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>" + "<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" + "</svg>" + "</button>" + "<button id='DCTTGPTSnapToTopRightBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" + "<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>" + "<rect x='52' y='0' width='38' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>" + "<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" + "<rect x='0' y='0' width='38' height='90' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" + "</svg>" + "</button>" + "</div>" +
+  jQuery("body").append("<div style='" + widthInlineStyle + heightInlineStyle + " position: fixed; top: " + initialY + "px; left: " + initialX + "px; display: inline-block; " + "background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" + "cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" + "<div style='position: absolute; width: 28px; left: -32px; background: #41464c; border-radius: 8px;'>" + "<button id='DCTTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" + "<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>" + "<rect x='0' y='0' width='90' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>" + "<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" + "</svg>" + "</button>" + "<button id='DCTTGPTSnapToTopRightBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" + "<svg width='100%' viewBox='0 0 90 90' preserveAspectRatio='xMidYMid meet'>" + "<rect x='52' y='0' width='38' height='38' fill='#5e606f' style='opacity: 1;' rx='6' ry='6'></rect>" + "<rect x='0' y='52' width='90' height='38' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" + "<rect x='0' y='0' width='38' height='90' fill='#b0b7bd' style='opacity: 1;' rx='6' ry='6'></rect>" + "</svg>" + "</button>" + "</div>" + "<div id='DCTTGPTControllsArea' style='opacity: 0.5;'>" +
   // Logo / title
   "<div id='DCTTGPTLogoArea' style='" + logoVisibleInlineStyle + " padding: 4px 40px; border-bottom: 1px solid grey;'>" +
   //4px
@@ -2320,11 +2320,20 @@ function CN_InitScript() {
   // Settings
   "</td>" + "</tr></table>" +
   // Colored bar - transparent by default, red when mic on, green when bot speaks
-  "<div style='padding-top: 12px; padding-bottom: 6px;'>" + "<div id='CNStatusBar' style='background: grey; width: 100%; height: 8px; border-radius: 4px; overflow: hidden;'>&nbsp;</div>" + "</div>" +
+  "<div style='position: absolute; top: -4px; width: calc(100% - 16px); z-index: 999;'>" + "<div id='CNStatusBar' style='background: grey; width: 100%; height: 8px; border-radius: 4px; overflow: hidden;'>&nbsp;</div>" + "</div>" +
   // Pause bar - click button to resume
-  "<div style='padding-top: 12px; padding-bottom: 12px; display: none;' id='CNSuspendedArea'>" + "<div style='font-size: 11px; color: grey;'><b>CONVERSATION PAUSED</b><br />Click button below or speak the pause word to resume</div>" + "<div style='padding: 10px;'>" + "<button style='font-size: 13px; border: 2px solid grey; padding: 6px 40px; margin: 6px; border-radius: 6px; opacity: 0.7;' id='CNResumeButton'><i class=\"fa-solid fa-play\"></i>&nbsp;&nbsp;RESUME</button>" + "</div>" + "</div>" + "</div>" + "</div>" +
+  "<div style='padding-top: 12px; padding-bottom: 12px; display: none;' id='CNSuspendedArea'>" + "<div style='font-size: 11px; color: grey;'><b>CONVERSATION PAUSED</b><br />Click button below or speak the pause word to resume</div>" + "<div style='padding: 10px;'>" + "<button style='font-size: 13px; border: 2px solid grey; padding: 6px 40px; margin: 6px; border-radius: 6px; opacity: 0.7;' id='CNResumeButton'><i class=\"fa-solid fa-play\"></i>&nbsp;&nbsp;RESUME</button>" + "</div>" + "</div>" + "</div>" + "</div>" + "</div>" +
   //below below logo
-  "<div id='DCTTGPTSpokenTextArea' style='" + DC_getSpokenTextAreaPositionStyle() + " width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" + "　" + "</div>" + "</div>");
+  "<div>" + "<div id='DCTTGPTSpokenTextArea' style='" + DC_getSpokenTextAreaPositionStyle() + " width: 100%; bottom: 100%; margin-bottom: 4px; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" + "" + "</div>" + "</div>" + "</div>");
+  // add mouseover event triggering opacity
+  var settingsElement = document.getElementById("DCTTGPTControllsArea");
+  settingsElement.addEventListener("mouseover", function () {
+    this.style.opacity = "1";
+  });
+  settingsElement.addEventListener("mouseout", function () {
+    this.style.opacity = "0.5"; // Revert to the default or previous state
+  });
+
   DC_ensureTtgptSettingsVisible();
   window.addEventListener("resize", function () {
     DC_ensureTtgptSettingsVisible();
