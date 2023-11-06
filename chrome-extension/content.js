@@ -1323,6 +1323,24 @@ function DC_setLocalStorageLogoVisibleStyle(tf) {
 }
 
 /**
+ * Retrieves the CSS positioning style for the spoken text area based on the logo's visibility.
+ *
+ * The function checks the local storage for the logo display setting. If the logo display
+ * setting is not defined or null, implying the logo is not meant to be visible, the text area
+ * will have 'relative' positioning. Otherwise, the text area is set to 'absolute' positioning,
+ * indicating the logo is displayed and the text area needs to be positioned accordingly.
+ *
+ * @returns {string} The CSS position property value for the spoken text area.
+ */
+function DC_getSpokenTextAreaPositionStyle() {
+  const isLogoVisible = localStorage.getItem("#TTGPTSettings.logoDisplayStyle");
+  if (isLogoVisible == undefined || isLogoVisible == null) {
+    return "position: relative;";
+  }
+  return "position: absolute;";
+}
+
+/**
  * Retrieves an inline style string determining the visibility of the logo of #TTGPTSettings from local storage.
  *
  * This function attempts to fetch the style string associated with the key
@@ -1644,7 +1662,9 @@ function CN_InitScript() {
       "</div>" +
       "</div>" +
       //below below logo
-      "<div id='DCTTGPTSpokenTextArea' style='position: relative; width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
+      "<div id='DCTTGPTSpokenTextArea' style='" +
+      DC_getSpokenTextAreaPositionStyle() +
+      " width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" +
       "　" +
       "</div>" +
       "</div>"

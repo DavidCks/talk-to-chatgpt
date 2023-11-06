@@ -2063,6 +2063,24 @@ function DC_setLocalStorageLogoVisibleStyle(tf) {
 }
 
 /**
+ * Retrieves the CSS positioning style for the spoken text area based on the logo's visibility.
+ *
+ * The function checks the local storage for the logo display setting. If the logo display
+ * setting is not defined or null, implying the logo is not meant to be visible, the text area
+ * will have 'relative' positioning. Otherwise, the text area is set to 'absolute' positioning,
+ * indicating the logo is displayed and the text area needs to be positioned accordingly.
+ *
+ * @returns {string} The CSS position property value for the spoken text area.
+ */
+function DC_getSpokenTextAreaPositionStyle() {
+  var isLogoVisible = localStorage.getItem("#TTGPTSettings.logoDisplayStyle");
+  if (isLogoVisible == undefined || isLogoVisible == null) {
+    return "position: relative;";
+  }
+  return "position: absolute;";
+}
+
+/**
  * Retrieves an inline style string determining the visibility of the logo of #TTGPTSettings from local storage.
  *
  * This function attempts to fetch the style string associated with the key
@@ -2304,7 +2322,7 @@ function CN_InitScript() {
   // Pause bar - click button to resume
   "<div style='padding-top: 12px; padding-bottom: 12px; display: none;' id='CNSuspendedArea'>" + "<div style='font-size: 11px; color: grey;'><b>CONVERSATION PAUSED</b><br />Click button below or speak the pause word to resume</div>" + "<div style='padding: 10px;'>" + "<button style='font-size: 13px; border: 2px solid grey; padding: 6px 40px; margin: 6px; border-radius: 6px; opacity: 0.7;' id='CNResumeButton'><i class=\"fa-solid fa-play\"></i>&nbsp;&nbsp;RESUME</button>" + "</div>" + "</div>" + "</div>" + "</div>" +
   //below below logo
-  "<div id='DCTTGPTSpokenTextArea' style='position: relative; width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" + "　" + "</div>" + "</div>");
+  "<div id='DCTTGPTSpokenTextArea' style='" + DC_getSpokenTextAreaPositionStyle() + " width: 100%; bottom: 100%; font-family: monospace; background-color: #2f3237; line-break: auto; border-radius: 8px;'>" + "　" + "</div>" + "</div>");
   DC_ensureTtgptSettingsVisible();
   window.addEventListener("resize", function () {
     DC_ensureTtgptSettingsVisible();
