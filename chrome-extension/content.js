@@ -903,9 +903,9 @@ function CN_KeepSpeechRecWorking() {
   clearTimeout(CN_TIMEOUT_KEEP_SPEECHREC_WORKING);
   CN_TIMEOUT_KEEP_SPEECHREC_WORKING = setTimeout(CN_KeepSpeechRecWorking, 100);
   if (!CN_IS_READING && !CN_IS_LISTENING && !CN_PAUSED) {
-    if (!CN_SPEECHREC && !CN_IS_READING) CN_StartSpeechRecognition();
+    if (!CN_SPEECHREC && !CN_IS_READING);
     else {
-      if (!CN_IS_LISTENING) {
+      /*CN_StartSpeechRecognition()*/ if (!CN_IS_LISTENING) {
         try {
           if (
             CN_SPEECH_REC_SUPPORTED &&
@@ -1057,7 +1057,7 @@ function CN_StartTTGPT() {
 
   setTimeout(function () {
     // Start speech rec
-    CN_StartSpeechRecognition();
+    // CN_StartSpeechRecognition();
 
     // Make sure message count starts from last; we don't want to read the latest message
     var currentMessageCount = jQuery(".text-base").length;
@@ -1630,20 +1630,20 @@ function CN_InitScript() {
       // Action buttons
       "<div style='font-size: 20px; padding: 12px 8px; padding-bottom: 0px; display:none;' class='CNActionButtons'>" +
       "<table width='100%' cellpadding=0 cellspacing=0><tr>" +
-      "<td width='24%' style='text-align: center;'>" +
-      "<span class='CNToggle' title='Voice recognition enabled. Click to disable. (Shortcut: ALT+SHIFT+H)' data-cn='micon' style='opacity: 0.7;'><i class=\"fa-solid fa-microphone\"></i></span>" + // Microphone enabled
-      "<span class='CNToggle' title='Voice recognition disabled. Click to enable. (Shortcut: ALT+SHIFT+H)' style='display:none; color: red; opacity: 0.7;' data-cn='micoff'><i class=\"fa-solid fa-microphone-slash\"></i></span>" + // Microphone disabled
-      "</td>" +
-      "<td width='1%' style='border-left: 1px solid grey; padding-left: 0 !important; padding-right: 0 !important; font-size: 1px; width: 1px;'>&nbsp;</td>" +
+      // "<td width='24%' style='text-align: center;'>" +
+      // "<span class='CNToggle' title='Voice recognition enabled. Click to disable. (Shortcut: ALT+SHIFT+H)' data-cn='micon' style='opacity: 0.7;'><i class=\"fa-solid fa-microphone\"></i></span>" + // Microphone enabled
+      // "<span class='CNToggle' title='Voice recognition disabled. Click to enable. (Shortcut: ALT+SHIFT+H)' style='display:none; color: red; opacity: 0.7;' data-cn='micoff'><i class=\"fa-solid fa-microphone-slash\"></i></span>" + // Microphone disabled
+      // "</td>" +
+      // "<td width='1%' style='border-left: 1px solid grey; padding-left: 0 !important; padding-right: 0 !important; font-size: 1px;'>&nbsp;</td>" +
       "<td width='24%' style='text-align: center;'>" +
       "<span class='CNToggle' title='Text-to-speech (bot voice) enabled. Click to disable. This will skip the current message entirely. (Shortcut: ALT+SHIFT+V)' data-cn='speakon' style='opacity: 0.7;'><i class=\"fa-solid fa-volume-high\"></i></span>" + // Speak out loud
       "<span class='CNToggle' title='Text-to-speech (bot voice) disabled. Click to enable. (Shortcut: ALT+SHIFT+V)' style='display:none; color: red; opacity: 0.7;' data-cn='speakoff'><i class=\"fa-solid fa-volume-xmark\"></i></span>  " + // Mute
       "</td>" +
-      "<td width='1%' style='border-left: 1px solid grey; padding-left: 0 !important; padding-right: 0 !important; font-size: 1px; width: 1px;'>&nbsp;</td>" +
+      "<td width='1%' style='border-left: 1px solid grey; padding-left: 0 !important; padding-right: 0 !important; font-size: 1px;'>&nbsp;</td>" +
       "<td width='24%' style='text-align: center;'>" +
       "<span class='CNToggle' title='Skip the message currently being read by the bot. (Shortcut: ALT+SHIFT+L)' data-cn='skip' style='opacity: 0.7;'><i class=\"fa-solid fa-angles-right\"></i></span>" + // Skip
       "</td>" +
-      "<td width='1%' style='border-left: 1px solid grey; padding-left: 0 !important; padding-right: 0 !important; font-size: 1px; width: 1px;'>&nbsp;</td>" +
+      "<td width='1%' style='border-left: 1px solid grey; padding-left: 0 !important; padding-right: 0 !important; font-size: 1px;'>&nbsp;</td>" +
       "<td width='24%' style='text-align: center;'>" +
       "<span class='CNToggle' title='Open settings menu to change bot voice, language, and other settings' data-cn='settings' style='opacity: 0.7;'><i class=\"fa-solid fa-sliders\"></i></span>" + // Settings
       "</td>" +
