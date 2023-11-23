@@ -1594,7 +1594,7 @@ function CN_InitScript() {
       "px; left: " +
       initialX +
       "px; display: inline-block; " +
-      "background: #41464c; color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
+      "color: white; padding: 0; font-size: 16px; border-radius: 8px; text-align: center;" +
       "cursor: move; font-weight: bold; z-index: 1111;' id='TTGPTSettings'>" +
       "<div style='position: absolute; width: 28px; left: -32px; background: #41464c; border-radius: 8px;'>" +
       "<button id='DCTTGPTSnapToTextareaBtn' style='margin: 4px; border-radius: 4px; overflow: auto;'>" +
@@ -1611,7 +1611,7 @@ function CN_InitScript() {
       "</svg>" +
       "</button>" +
       "</div>" +
-      "<div id='DCTTGPTControllsArea' style='opacity: 0.5;'>" +
+      "<div id='DCTTGPTControllsArea' style='opacity: 0.5; background-color: rgb(65, 70, 76); border-radius: 8px;'>" +
       // Logo / title
       "<div id='DCTTGPTLogoArea' style='" +
       logoVisibleInlineStyle +
@@ -1629,7 +1629,7 @@ function CN_InitScript() {
       "<button style='border: 2px solid grey; padding: 6px 40px; margin: 6px; border-radius: 6px; opacity: 0.7;' id='CNStartButton' title='ALT+SHIFT+S'><i class=\"fa-solid fa-play\"></i>&nbsp;&nbsp;START</button>" +
       "</div>" +
       // Action buttons
-      "<div style='font-size: 20px; padding: 12px 8px; padding-bottom: 0px; display:none;' class='CNActionButtons'>" +
+      "<div style='font-size: 20px; padding: 12px 8px; padding-bottom: 6px; display:none;' class='CNActionButtons'>" +
       "<table width='100%' cellpadding=0 cellspacing=0><tr>" +
       // "<td width='24%' style='text-align: center;'>" +
       // "<span class='CNToggle' title='Voice recognition enabled. Click to disable. (Shortcut: ALT+SHIFT+H)' data-cn='micon' style='opacity: 0.7;'><i class=\"fa-solid fa-microphone\"></i></span>" + // Microphone enabled
